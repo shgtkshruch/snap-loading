@@ -1,0 +1,8 @@
+{
+  "name": "snap-loading",
+  "private": true,
+  "dependencies": {
+    "snap.svg": "~0.3.0"
+  },
+  "devDependencies": {}
+}
