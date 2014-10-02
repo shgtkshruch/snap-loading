@@ -1,42 +1,45 @@
 class Loading
   constructor: ->
-    @r = 10
-    @num = 3 
-    @padding = @r * 1.7
+    @maxR = 10 
+    @minR = 0
+    @num = 3
+    @padding = @maxR * 1.7
     @fill = 'white'
     @duration = 450
+    @interval = @duration
+    @icons = []
 
-    @_start()
+    @_initialize()
 
-  _start: ->
-    width = @r * 2 * @num + (@padding - @r) * (@num - 1)
-    height = @r * 2
+  start: ->
+    setInterval =>
+      @_timer c, i for c, i in @icons
+    , @duration * 2 + @interval
 
-    s = Snap width, height
+  _initialize: ->
+    width = @maxR * 2 * @num + (@padding - @maxR) * (@num - 1)
+    height = @maxR * 2
+    @s = Snap width, height
+    @icons.push @_circle i for i in [0...@num]
 
-    for i in [0...@num]
-      c = s
-        .circle @r * (i + 1) + @padding * i, @r, 0
-        .attr
-          fill: @fill
-      @_timer c, i
+  _circle: (i) ->
+    @s.circle @maxR * (i + 1) + @padding * i, @maxR, @minR
+      .attr
+        fill: @fill
 
   _timer: (el, i) ->
     setTimeout =>
-      setInterval =>
-        @_animate el
-      , @duration * 2
+      @_animate el
     , @duration / @num * i
 
   _animate: (el) ->
     toSmall = =>
       el.animate
-        r: 0, @duration, mina.linear
+        r: @minR, @duration, mina.linear
 
     el.animate
-      r: @r, @duration, mina.linear, toSmall
+      r: @maxR, @duration, mina.linear, toSmall
 
 window.onload = ->
-  setTimeout ->
-    new Loading
-  , 1000
+  loading = new Loading
+  loading.start()
